@@ -44,6 +44,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "GAS Save Component")
 	bool LoadGASState(const FString& SlotName = TEXT("GASSaveSlot"));
 
+	/** Get raw saved GAS data for this actor from disk */
+	UFUNCTION(BlueprintCallable, Category = "GAS Save Component")
+	bool GetSavedGASData(FGASActorSaveData& OutSaveData, const FString& SlotName = TEXT("GASSaveSlot"));
+
+	/** Clear saved GAS data for this actor from disk */
+	UFUNCTION(BlueprintCallable, Category = "GAS Save Component")
+	bool ClearSavedGASData(const FString& SlotName = TEXT("GASSaveSlot"));
+
 protected:
 	virtual void BeginPlay() override;
 };

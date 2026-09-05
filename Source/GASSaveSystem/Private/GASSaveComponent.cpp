@@ -40,3 +40,15 @@ bool UGASSaveComponent::LoadGASState(const FString& SlotName)
 	const FString TargetSlot = SlotName.IsEmpty() ? DefaultSaveSlot : SlotName;
 	return UGASSaveSystemLibrary::LoadActorGASFromSlot(this, GetOwner(), SavedActorID, TargetSlot);
 }
+
+bool UGASSaveComponent::GetSavedGASData(FGASActorSaveData& OutSaveData, const FString& SlotName)
+{
+	const FString TargetSlot = SlotName.IsEmpty() ? DefaultSaveSlot : SlotName;
+	return UGASSaveSystemLibrary::GetSavedActorGASData(this, SavedActorID, OutSaveData, TargetSlot);
+}
+
+bool UGASSaveComponent::ClearSavedGASData(const FString& SlotName)
+{
+	const FString TargetSlot = SlotName.IsEmpty() ? DefaultSaveSlot : SlotName;
+	return UGASSaveSystemLibrary::ClearSavedActorGASData(this, SavedActorID, TargetSlot);
+}

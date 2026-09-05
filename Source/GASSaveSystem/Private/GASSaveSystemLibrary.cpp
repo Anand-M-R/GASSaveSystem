@@ -205,3 +205,139 @@ bool UGASSaveSystemLibrary::LoadActorGASFromSlot(UObject* WorldContextObject, AA
 
 	return false;
 }
+
+bool UGASSaveSystemLibrary::SaveMultipleActorsGASToSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName, int32 UserIndex)
+{
+	if (TargetActors.Num() == 0) return false;
+
+	UGASSaveGame* SaveGameObject = nullptr;
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex))
+	{
+		SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	}
+
+	if (!SaveGameObject)
+	{
+		SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::CreateSaveGameObject(UGASSaveGame::StaticClass()));
+		SaveGameObject->SaveSlotName = SlotName;
+		SaveGameObject->UserIndex = UserIndex;
+	}
+
+	int32 SavedCount = 0;
+	for (AActor* Actor : TargetActors)
+	{
+		if (!Actor) continue;
+
+		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
+		if (!ASC) continue;
+
+		FString ActorID = Actor->GetName();
+		FGASActorSaveData SaveData;
+		SaveData.SavedActorID = ActorID;
+
+		if (SaveAbilitySystemComponent(ASC, SaveData))
+		{
+			SaveGameObject->SavedGASActors.Add(ActorID, SaveData);
+			SavedCount++;
+		}
+	}
+
+	if (SavedCount > 0)
+	{
+		SaveGameObject->SaveTimestamp = FDateTime::Now();
+		return UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName, UserIndex);
+	}
+
+	return false;
+}
+
+bool UGASSaveSystemLibrary::LoadMultipleActorsGASFromSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName, int32 UserIndex)
+{
+	if (TargetActors.Num() == 0) return false;
+	if (!UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex)) return false;
+
+	UGASSaveGame* SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	if (!SaveGameObject) return false;
+
+	int32 RestoredCount = 0;
+	for (AActor* Actor : TargetActors)
+	{
+		if (!Actor) continue;
+
+		UAbilitySystemComponent* ASC = UAbilitySystemGlobals::GetAbilitySystemComponentFromActor(Actor);
+		if (!ASC) continue;
+
+		FString ActorID = Actor->GetName();
+		if (const FGASActorSaveData* FoundData = SaveGameObject->SavedGASActors.Find(ActorID))
+		{
+			if (RestoreAbilitySystemComponent(ASC, *FoundData))
+			{
+				RestoredCount++;
+			}
+		}
+	}
+
+	return RestoredCount > 0;
+}
+
+bool UGASSaveSystemLibrary::DoesGASSaveSlotExist(const FString& SlotName, int32 UserIndex)
+{
+	return UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex);
+}
+
+bool UGASSaveSystemLibrary::DeleteGASSaveSlot(const FString& SlotName, int32 UserIndex)
+{
+	return UGameplayStatics::DeleteGameInSlot(SlotName, UserIndex);
+}
+
+bool UGASSaveSystemLibrary::GetSavedActorGASData(UObject* WorldContextObject, const FString& SavedActorID, FGASActorSaveData& OutSaveData, const FString& SlotName, int32 UserIndex)
+{
+	if (!UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex)) return false;
+
+	UGASSaveGame* SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	if (!SaveGameObject) return false;
+
+	if (const FGASActorSaveData* FoundData = SaveGameObject->SavedGASActors.Find(SavedActorID))
+	{
+		OutSaveData = *FoundData;
+		return true;
+	}
+
+	return false;
+}
+
+bool UGASSaveSystemLibrary::SetSavedActorGASData(UObject* WorldContextObject, const FString& SavedActorID, const FGASActorSaveData& InSaveData, const FString& SlotName, int32 UserIndex)
+{
+	UGASSaveGame* SaveGameObject = nullptr;
+	if (UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex))
+	{
+		SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	}
+
+	if (!SaveGameObject)
+	{
+		SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::CreateSaveGameObject(UGASSaveGame::StaticClass()));
+		SaveGameObject->SaveSlotName = SlotName;
+		SaveGameObject->UserIndex = UserIndex;
+	}
+
+	SaveGameObject->SavedGASActors.Add(SavedActorID, InSaveData);
+	SaveGameObject->SaveTimestamp = FDateTime::Now();
+	return UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName, UserIndex);
+}
+
+bool UGASSaveSystemLibrary::ClearSavedActorGASData(UObject* WorldContextObject, const FString& SavedActorID, const FString& SlotName, int32 UserIndex)
+{
+	if (!UGameplayStatics::DoesSaveGameExist(SlotName, UserIndex)) return false;
+
+	UGASSaveGame* SaveGameObject = Cast<UGASSaveGame>(UGameplayStatics::LoadGameFromSlot(SlotName, UserIndex));
+	if (!SaveGameObject) return false;
+
+	if (SaveGameObject->SavedGASActors.Remove(SavedActorID) > 0)
+	{
+		SaveGameObject->SaveTimestamp = FDateTime::Now();
+		return UGameplayStatics::SaveGameToSlot(SaveGameObject, SlotName, UserIndex);
+	}
+
+	return false;
+}
