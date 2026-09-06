@@ -83,3 +83,41 @@ struct GASSAVESYSTEM_API FGASActorSaveData
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save System")
 	TArray<FGASActiveEffectSaveData> SavedActiveEffects;
 };
+
+/** Options to selectively save specific elements of the Ability System Component */
+USTRUCT(BlueprintType)
+struct GASSAVESYSTEM_API FGASSaveOptions
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Options")
+	bool bSaveAttributes = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Options")
+	bool bSaveGameplayTags = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Options")
+	bool bSaveGrantedAbilities = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Options")
+	bool bSaveActiveEffects = true;
+};
+
+/** Options to selectively restore specific elements onto the Ability System Component */
+USTRUCT(BlueprintType)
+struct GASSAVESYSTEM_API FGASRestoreOptions
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Restore Options")
+	bool bRestoreAttributes = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Restore Options")
+	bool bRestoreGameplayTags = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Restore Options")
+	bool bRestoreGrantedAbilities = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Restore Options")
+	bool bRestoreActiveEffects = true;
+};

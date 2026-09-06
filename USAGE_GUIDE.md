@@ -152,6 +152,26 @@ You can also use static nodes anywhere in your Blueprints without attaching a co
 
 ---
 
+### Selective Saving & Filtering (`FGASSaveOptions` & `FGASRestoreOptions`)
+If you only want to save/restore specific elements (e.g. Save Attributes & Tags, but ignore Granted Abilities):
+
+* **`FGASSaveOptions`**:
+  * `bSaveAttributes` (default `true`)
+  * `bSaveGameplayTags` (default `true`)
+  * `bSaveGrantedAbilities` (default `true` — set `false` to skip saving abilities)
+  * `bSaveActiveEffects` (default `true`)
+
+* **`FGASRestoreOptions`**:
+  * `bRestoreAttributes` (default `true`)
+  * `bRestoreGameplayTags` (default `true`)
+  * `bRestoreGrantedAbilities` (default `true`)
+  * `bRestoreActiveEffects` (default `true`)
+
+**In `UGASSaveComponent` Details Panel:**
+Expand **Save Options** or **Restore Options** in the Inspector to uncheck any element you do not wish to save or restore.
+
+---
+
 ## C++ Usage Guide & API Reference
 
 ### Including Headers

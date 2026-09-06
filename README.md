@@ -30,31 +30,38 @@ For detailed documentation on saving & restoring **Gameplay Attributes**, **Game
 
 ---
 
-## Usage Guide
+## How to Use
 
-### 1. Drop-in Component (Blueprint & C++)
-Attach `UGASSaveComponent` to your Character or Enemy Actor:
-* Set `SavedActorID` to a unique identifier (e.g. `Player_0` or `Boss_Dragon`).
-* Call `SaveGASState()` or `LoadGASState()` from Blueprints or C++.
+### 1. Drop-in Actor Component (Zero-Code Setup)
+Attach **`UGASSaveComponent`** to any Player Character, Companion, or Enemy Blueprint:
+1. Set **`SavedActorID`**: A unique ID for the actor (e.g., `Player_01`).
+2. Set **`DefaultSaveSlot`**: Save file name on disk (e.g., `Slot_1`).
+3. Call **`Save GAS State`** or **`Load GAS State`** from Blueprints or C++.
 
-### 2. Static Function Library (Blueprint Nodes)
-Use the `UGASSaveSystemLibrary` static nodes in Blueprints:
-* **`SaveActorGASToSlot`**: Saves an Actor's entire GAS state to disk.
-* **`LoadActorGASFromSlot`**: Restores an Actor's GAS state from a save file.
+### 2. Single-Node Blueprint Function Library
+Call static nodes from any Blueprint:
+* **`Save Actor GAS To Slot`**: Serializes Attributes, Tags, Abilities & Effects to disk.
+* **`Load Actor GAS From Slot`**: Restores state onto the target actor from disk.
+* **`Save Multiple Actors GAS To Slot`**: Batch saves an array of actors (Player + Party) at once.
+* **`Load Multiple Actors GAS From Slot`**: Batch restores an array of actors at once.
 
-### 3. C++ Direct API
+### 3. Selective Saving & Filtering (`FGASSaveOptions` & `FGASRestoreOptions`)
+To save/restore specific elements (e.g., Save Attributes & Tags, but skip Granted Abilities):
 ```cpp
-#include "GASSaveSystemLibrary.h"
+// C++ Example: Skip saving Granted Abilities
+FGASSaveOptions SaveOptions;
+SaveOptions.bSaveGrantedAbilities = false; // ❌ Do not save GA
 
-// Save GAS State to Struct
-FGASActorSaveData SaveData;
-UGASSaveSystemLibrary::SaveAbilitySystemComponent(MyAbilitySystemComponent, SaveData);
-
-// Restore GAS State from Struct
-UGASSaveSystemLibrary::RestoreAbilitySystemComponent(MyAbilitySystemComponent, SaveData);
+UGASSaveSystemLibrary::SaveActorGASToSlot(GetWorld(), MyPlayer, "Player_01", "Slot_1", 0, SaveOptions);
 ```
+*(In Blueprints, expand **Save Options** or **Restore Options** in the Details Panel).*
+
+---
+
+## 📖 Complete Documentation
+For full API reference, C++ examples, and slot management guide, see [**USAGE_GUIDE.md**](USAGE_GUIDE.md).
 
 ---
 
 ## License
-MIT License. Free for commercial and open-source projects.
+MIT License. Free for commercial and open-source projects created by Anand M Rastapur.

@@ -30,7 +30,7 @@ bool UGASSaveComponent::SaveGASState(const FString& SlotName)
 	if (!GetOwner()) return false;
 
 	const FString TargetSlot = SlotName.IsEmpty() ? DefaultSaveSlot : SlotName;
-	return UGASSaveSystemLibrary::SaveActorGASToSlot(this, GetOwner(), SavedActorID, TargetSlot);
+	return UGASSaveSystemLibrary::SaveActorGASToSlot(this, GetOwner(), SavedActorID, TargetSlot, 0, SaveOptions);
 }
 
 bool UGASSaveComponent::LoadGASState(const FString& SlotName)
@@ -38,7 +38,7 @@ bool UGASSaveComponent::LoadGASState(const FString& SlotName)
 	if (!GetOwner()) return false;
 
 	const FString TargetSlot = SlotName.IsEmpty() ? DefaultSaveSlot : SlotName;
-	return UGASSaveSystemLibrary::LoadActorGASFromSlot(this, GetOwner(), SavedActorID, TargetSlot);
+	return UGASSaveSystemLibrary::LoadActorGASFromSlot(this, GetOwner(), SavedActorID, TargetSlot, 0, RestoreOptions);
 }
 
 bool UGASSaveComponent::GetSavedGASData(FGASActorSaveData& OutSaveData, const FString& SlotName)

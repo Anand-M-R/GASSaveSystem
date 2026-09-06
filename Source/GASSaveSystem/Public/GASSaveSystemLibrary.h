@@ -18,40 +18,40 @@ class GASSAVESYSTEM_API UGASSaveSystemLibrary : public UBlueprintFunctionLibrary
 
 public:
 	/**
-	 * Extract attributes, tags, granted abilities, and active effects from an AbilitySystemComponent.
+	 * Extract attributes, tags, granted abilities, and active effects from an AbilitySystemComponent with filter options.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System")
-	static bool SaveAbilitySystemComponent(UAbilitySystemComponent* ASC, FGASActorSaveData& OutSaveData);
+	static bool SaveAbilitySystemComponent(UAbilitySystemComponent* ASC, FGASActorSaveData& OutSaveData, FGASSaveOptions SaveOptions = FGASSaveOptions());
 
 	/**
-	 * Restore attributes, tags, granted abilities, and active effects onto an AbilitySystemComponent.
+	 * Restore attributes, tags, granted abilities, and active effects onto an AbilitySystemComponent with filter options.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System")
-	static bool RestoreAbilitySystemComponent(UAbilitySystemComponent* ASC, const FGASActorSaveData& InSaveData);
+	static bool RestoreAbilitySystemComponent(UAbilitySystemComponent* ASC, const FGASActorSaveData& InSaveData, FGASRestoreOptions RestoreOptions = FGASRestoreOptions());
 
 	/**
 	 * Saves a single Actor's GAS state directly to a specified Save Game slot on disk.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System", meta = (WorldContext = "WorldContextObject"))
-	static bool SaveActorGASToSlot(UObject* WorldContextObject, AActor* TargetActor, const FString& SavedActorID, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0);
+	static bool SaveActorGASToSlot(UObject* WorldContextObject, AActor* TargetActor, const FString& SavedActorID, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0, FGASSaveOptions SaveOptions = FGASSaveOptions());
 
 	/**
 	 * Loads a single Actor's GAS state from a Save Game slot on disk and restores it onto the target Actor.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System", meta = (WorldContext = "WorldContextObject"))
-	static bool LoadActorGASFromSlot(UObject* WorldContextObject, AActor* TargetActor, const FString& SavedActorID, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0);
+	static bool LoadActorGASFromSlot(UObject* WorldContextObject, AActor* TargetActor, const FString& SavedActorID, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0, FGASRestoreOptions RestoreOptions = FGASRestoreOptions());
 
 	/**
 	 * Save multiple Actors' GAS states into a single Save Game slot on disk at once.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System", meta = (WorldContext = "WorldContextObject"))
-	static bool SaveMultipleActorsGASToSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0);
+	static bool SaveMultipleActorsGASToSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0, FGASSaveOptions SaveOptions = FGASSaveOptions());
 
 	/**
 	 * Load multiple Actors' GAS states from a single Save Game slot on disk at once.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "GAS Save System", meta = (WorldContext = "WorldContextObject"))
-	static bool LoadMultipleActorsGASFromSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0);
+	static bool LoadMultipleActorsGASFromSlot(UObject* WorldContextObject, const TArray<AActor*>& TargetActors, const FString& SlotName = TEXT("GASSaveSlot"), int32 UserIndex = 0, FGASRestoreOptions RestoreOptions = FGASRestoreOptions());
 
 	/**
 	 * Check if a GAS Save Game slot file exists on disk.

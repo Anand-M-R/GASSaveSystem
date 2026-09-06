@@ -30,6 +30,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Component")
 	FString DefaultSaveSlot;
 
+	/** Filtering options to choose which elements to save (Attributes, Tags, Abilities, Effects) */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Component")
+	FGASSaveOptions SaveOptions;
+
+	/** Filtering options to choose which elements to restore (Attributes, Tags, Abilities, Effects) */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GAS Save Component")
+	FGASRestoreOptions RestoreOptions;
+
 	UPROPERTY(BlueprintAssignable, Category = "GAS Save Component")
 	FOnGASSaveEvent OnBeforeGASSaved;
 
